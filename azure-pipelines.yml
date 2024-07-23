@@ -47,7 +47,7 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'weather-conn'
+              azureSubscription: 'arm-conn'
               appName: 'weatherinfo'
               package: '$(Pipeline.Workspace)/drop'
               appType: 'webApp'
