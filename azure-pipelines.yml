@@ -51,7 +51,7 @@ stages:
           - task: AzureWebApp@1
             inputs:
               azureSubscription: 'new-conn'
-              appName: 'weatherinfo'
+              appName: 'accu-weather'
               package: '$(Pipeline.Workspace)/drop'
               appType: 'webApp'
             displayName: 'Deploy to Azure Web App'
