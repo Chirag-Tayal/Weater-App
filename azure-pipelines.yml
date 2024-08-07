@@ -22,11 +22,23 @@ stages:
               npm run build
             displayName: 'Install dependencies, run tests, and build'
 
+          - task: SonarCloudPrepare@2
+            inputs:
+              SonarCloud: 'sonarcloud-conn'
+              organization: 'chiragtayal018'
+              scannerMode: 'MSBuild'
+              projectKey: '5f3737b5a7034aa0f645fc9f819d9faba5c5f359'
+              projectName: 'Weather_CICD'
+
           - task: CopyFiles@2
             inputs:
               contents: 'build/**'
               targetFolder: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Copy build files'
+          
+          - task: SonarCloudAnalyze@2
+            # inputs:
+            #   jdkversion: 'JAVA_HOME_17_X64'
 
           - task: PublishBuildArtifacts@1
             inputs:
