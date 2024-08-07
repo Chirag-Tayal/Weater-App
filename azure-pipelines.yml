@@ -2,10 +2,8 @@ trigger:
   branches:
     include:
       - '*'
-
 pool:
-  name: 'Default'
-
+  name: my-pool
 stages:
   - stage: Build
     displayName: 'Build stage'
@@ -20,9 +18,9 @@ stages:
 
           - script: |
               npm install
-              npm test
+              npm test -- --watchAll=false
               npm run build
-            displayName: 'Install dependencies, run tests, and build application'
+            displayName: 'Install dependencies, run tests, and build'
 
           - task: CopyFiles@2
             inputs:
@@ -38,6 +36,7 @@ stages:
 
   - stage: Deploy
     displayName: 'Deploy stage'
+    dependsOn: Build
     jobs:
       - job: Deploy
         displayName: 'Deploy job'
@@ -50,8 +49,8 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'new-conn'
-              appName: 'accu-weather'
-              package: '$(Pipeline.Workspace)/drop'
+              azureSubscription: 'weather-conn'
+              appName: 'weatherinfo'
+              package: '$(Pipeline.Workspace)/drop/build'
               appType: 'webApp'
             displayName: 'Deploy to Azure Web App'
