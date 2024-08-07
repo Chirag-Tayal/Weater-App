@@ -35,7 +35,7 @@ stages:
 
           - script: |
               npx sonar-scanner \
-                -Dsonar.projectKey=Weather_CICD \
+                -Dsonar.projectKey=chiragtayal018_Weather_CICD \
                 -Dsonar.organization=chiragtayal018 \
                 -Dsonar.sources=src \
                 -Dsonar.host.url=https://sonarcloud.io \
