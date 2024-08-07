@@ -22,13 +22,25 @@ stages:
               npm run build
             displayName: 'Install dependencies, run tests, and build'
 
-          - task: SonarCloudPrepare@2
+          - task: SonarCloudPrepare@1
             inputs:
-              SonarCloud: 'sonarcloud-conn'
-              organization: 'chiragtayal018'
-              scannerMode: 'MSBuild'
-              projectKey: '5f3737b5a7034aa0f645fc9f819d9faba5c5f359'
-              projectName: 'Weather_CICD'
+              SonarCloud: 'sonarcloud-conn' # Your SonarCloud service connection name
+              organization: 'chiragtayal018' # Your SonarCloud organization
+              scannerMode: 'CLI' # Use CLI scanner for JavaScript projects
+              configMode: 'manual'
+              cliProjectKey: 'Weather_CICD' # Your project key
+              cliProjectName: 'Weather_CICD' # Your project name
+              cliSources: 'src' # Your source directory
+            displayName: 'Prepare SonarCloud Analysis'
+
+          - script: |
+              npx sonar-scanner \
+                -Dsonar.projectKey=Weather_CICD \
+                -Dsonar.organization=chiragtayal018 \
+                -Dsonar.sources=src \
+                -Dsonar.host.url=https://sonarcloud.io \
+                -Dsonar.login=$(SONAR_TOKEN)
+            displayName: 'Run SonarCloud Scanner'
 
           - task: CopyFiles@2
             inputs:
@@ -36,16 +48,12 @@ stages:
               targetFolder: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Copy build files'
           
-          - task: SonarCloudAnalyze@2
-            # inputs:
-            #   jdkversion: 'JAVA_HOME_17_X64'
-
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: 'drop'
             displayName: 'Publish build artifacts'
-
+          
   - stage: Deploy
     displayName: 'Deploy stage'
     dependsOn: Build
