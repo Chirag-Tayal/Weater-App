@@ -2,14 +2,43 @@ trigger:
   branches:
     include:
       - '*'
+
 pool:
   name: my-pool
+
 stages:
+  - stage: Terraform
+    displayName: 'Terraform Stage'
+    jobs:
+      - job: Terraform
+        displayName: 'Terraform Job'
+        steps:
+          - script: |
+              terraform init
+            displayName: 'Terraform Init'
+
+          - script: |
+              terraform fmt -check
+            displayName: 'Terraform Format Check'
+
+          - script: |
+              terraform validate
+            displayName: 'Terraform Validate'
+
+          - script: |
+              terraform plan -out=tfplan
+            displayName: 'Terraform Plan'
+
+          - script: |
+              terraform apply -auto-approve tfplan
+            displayName: 'Terraform Apply'
+
   - stage: Build
-    displayName: 'Build stage'
+    displayName: 'Build Stage'
+    dependsOn: Terraform
     jobs:
       - job: Build
-        displayName: 'Build job'
+        displayName: 'Build Job'
         steps:
           - task: NodeTool@0
             inputs:
@@ -24,54 +53,36 @@ stages:
 
           - task: SonarCloudPrepare@1
             inputs:
-              SonarCloud: 'sonarcloud-conn' # Your SonarCloud service connection name
-              organization: 'chiragtayal018' # Your SonarCloud organization
-              scannerMode: 'CLI' # Use CLI scanner for JavaScript projects
+              SonarCloud: 'sonarcloud-conn'
+              organization: 'chiragtayal018'
+              scannerMode: 'CLI'
               configMode: 'manual'
-              cliProjectKey: 'chiragtayal018_Weather_CICD' # Your project key
-              cliProjectName: 'Weather_CICD' # Your project name
-              cliSources: 'src' # Your source directory
+              cliProjectKey: 'chiragtayal018_Weather_CICD'
+              cliProjectName: 'Weather_CICD'
+              cliSources: 'src'
             displayName: 'Prepare SonarCloud Analysis'
 
           - script: |
-              npx sonar-scanner \
-                -Dsonar.projectKey=chiragtayal018_Weather_CICD \
-                -Dsonar.organization=chiragtayal018 \
-                -Dsonar.sources=src \
-                -Dsonar.host.url=https://sonarcloud.io \
-                -Dsonar.login=$(SONAR_TOKEN) \
+              npx sonar-scanner \\
+                -Dsonar.projectKey=chiragtayal018_Weather_CICD \\
+                -Dsonar.organization=chiragtayal018 \\
+                -Dsonar.sources=src \\
+                -Dsonar.host.url=https://sonarcloud.io \\
+                -Dsonar.login=$(SONAR_TOKEN) \\
                 -X
             displayName: 'Run SonarCloud Scanner with Debug'
 
-          - task: CopyFiles@2
-            inputs:
-              contents: 'build/**'
-              targetFolder: '$(Build.ArtifactStagingDirectory)'
-            displayName: 'Copy build files'
-          
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathToPublish: '$(Build.ArtifactStagingDirectory)'
-              artifactName: 'drop'
-            displayName: 'Publish build artifacts'
-          
   - stage: Deploy
-    displayName: 'Deploy stage'
+    displayName: 'Deploy Stage'
     dependsOn: Build
     jobs:
       - job: Deploy
-        displayName: 'Deploy job'
+        displayName: 'Deploy to Azure App Service'
         steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              artifactName: 'drop'
-              targetPath: '$(Pipeline.Workspace)/drop'
-            displayName: 'Download Build Artifacts'
-
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'weather-conn'
-              appName: 'react-pipelines'
-              package: '$(Pipeline.Workspace)/drop/build'
-              appType: 'webApp'
-            displayName: 'Deploy to Azure Web App'
+              azureSubscription: '${{ variables.azureServiceConnection }}'
+              appType: 'webAppLinux'
+              appName: '${{ variables.appServiceName }}'
+              package: '$(Build.ArtifactStagingDirectory)/drop/*.zip'
+            displayName: 'Deploy to Azure App Service'
