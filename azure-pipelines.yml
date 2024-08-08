@@ -2,16 +2,14 @@ trigger:
   branches:
     include:
       - '*'
-
 pool:
   name: my-pool
-
 stages:
   - stage: Build
-    displayName: 'Build Stage'
+    displayName: 'Build stage'
     jobs:
       - job: Build
-        displayName: 'Build Job'
+        displayName: 'Build job'
         steps:
           - task: NodeTool@0
             inputs:
@@ -24,38 +22,56 @@ stages:
               npm run build
             displayName: 'Install dependencies, run tests, and build'
 
-          - task: SonarCloudPrepare@2
+          - task: SonarCloudPrepare@1
             inputs:
-              SonarCloud: 'sonar-cloud'
-              organization: 'chiragtayal018'
-              scannerMode: 'CLI'
-              configMode: 'file'
-              cliProjectKey: 'chiragtayal018_Weather_CICD'
-              cliProjectName: 'Weather_CICD'
-              cliSources: 'src'
+              SonarCloud: 'sonar-cloud' # Your SonarCloud service connection name
+              organization: 'chiragtayal018' # Your SonarCloud organization
+              scannerMode: 'CLI' # Use CLI scanner for JavaScript projects
+              configMode: 'manual'
+              cliProjectKey: 'chiragtayal018_Weather_CICD' # Your project key
+              cliProjectName: 'Weather_CICD' # Your project name
+              cliSources: 'src' # Your source directory
             displayName: 'Prepare SonarCloud Analysis'
 
           - script: |
-              npx sonar-scanner \\
-                -Dsonar.projectKey=chiragtayal018_Weather_CICD \\
-                -Dsonar.organization=chiragtayal018 \\
-                -Dsonar.sources=src \\
-                -Dsonar.host.url=https://sonarcloud.io \\
-                -Dsonar.login=$(SONAR_TOKEN) \\
+              npx sonar-scanner \
+                -Dsonar.projectKey=chiragtayal018_Weather_CICD \
+                -Dsonar.organization=chiragtayal018 \
+                -Dsonar.sources=src \
+                -Dsonar.host.url=https://sonarcloud.io \
+                -Dsonar.login=$(SONAR_TOKEN) \
                 -X
             displayName: 'Run SonarCloud Scanner with Debug'
 
+          - task: CopyFiles@2
+            inputs:
+              contents: 'build/**'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+            displayName: 'Copy build files'
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: 'drop'
+            displayName: 'Publish build artifacts'
+          
   - stage: Deploy
-    displayName: 'Deploy Stage'
+    displayName: 'Deploy stage'
     dependsOn: Build
     jobs:
       - job: Deploy
-        displayName: 'Deploy to Azure App Service'
+        displayName: 'Deploy job'
         steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: 'drop'
+              targetPath: '$(Pipeline.Workspace)/drop'
+            displayName: 'Download Build Artifacts'
+
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: '${{ variables.azureServiceConnection }}'
-              appType: 'webAppLinux'
-              appName: '${{ variables.appServiceName }}'
-              package: '$(Build.ArtifactStagingDirectory)/drop/*.zip'
-            displayName: 'Deploy to Azure App Service'
+              azureSubscription: 'weather-conn'
+              appName: 'react-pipelines'
+              package: '$(Pipeline.Workspace)/drop/build'
+              appType: 'webApp'
+            displayName: 'Deploy to Azure Web App'
