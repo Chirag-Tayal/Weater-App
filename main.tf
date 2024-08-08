@@ -1,3 +1,4 @@
+# Existing Azure RM resources
 resource "azurerm_resource_group" "example" {
   name     = "${var.prefix}-resources"
   location = var.location
@@ -37,24 +38,24 @@ output "app_service_name" {
   value = azurerm_app_service.example.name
 }
 
-output "azure_service_connection" {
-  value = azuredevops_serviceendpoint_azurerm.example.id
+
+
+provider "azuredevops" {
+  org_service_url       = "https://dev.azure.com/chiragtayal018"
+  personal_access_token = var.azure_devops_pat
 }
 
-
 resource "azuredevops_serviceendpoint_azurerm" "example" {
-  project_id            = "28f5b3ba-c89d-445b-b328-03ecb3fbba5b"
-  service_endpoint_name = "${var.prefix}-service-connection"
-  description           = "Service connection for ${var.prefix}"
-
-  # Authentication details
-  azurerm_spn_tenantid      = var.tenant_id
-  azurerm_subscription_id   = var.subscription_id
-  azurerm_subscription_name = var.subscription_name
+  project_id            = "28f5b3ba-c89d-445b-b328-03ecb3fbba5b" # Use your existing project ID
+  service_endpoint_name = "tf-service-connection"
 
   credentials {
-    serviceprincipalid  = var.client_id
-    serviceprincipalkey = var.client_secret
+    serviceprincipalid  = var.azure_service_principal_id
+    serviceprincipalkey = var.azure_service_principal_key
   }
+
+  azurerm_spn_tenantid      = var.azure_tenant_id
+  azurerm_subscription_id   = var.azure_subscription_id
+  azurerm_subscription_name = "example-subscription"
 }
 

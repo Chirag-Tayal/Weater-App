@@ -8,17 +8,14 @@ terraform {
     }
     azuredevops = {
       source  = "microsoft/azuredevops"
-      version = "~> 0.1.0"
+      version = "~> 0.1"
     }
   }
-}
-
-provider "azuredevops" {
-  org_service_url       = "https://dev.azure.com/chiragtayal018"
-  personal_access_token = var.azure_devops_pat
 }
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
   features {}
 }
+
+
