@@ -25,11 +25,11 @@ resource "azurerm_app_service" "example" {
 
   site_config {
     linux_fx_version = "NODE|20-lts"
+    app_command_line = "pm2 serve /home/site/wwwroot --no-daemon"
   }
 
   app_settings = {
     WEBSITE_NODE_DEFAULT_VERSION = "20.0.0"
-    STARTUP_COMMAND              = "pm2 serve /home/site/wwwroot --no-daemon"
   }
 
   https_only = true
