@@ -42,7 +42,7 @@ stages:
               export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
               export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
               export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform plan -out=tfplan
+              terraform plan | grep "will be created."
             displayName: 'Terraform Plan'
 
           - script: |
