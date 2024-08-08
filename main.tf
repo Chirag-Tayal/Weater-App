@@ -29,6 +29,7 @@ resource "azurerm_app_service" "example" {
 
   app_settings = {
     WEBSITE_NODE_DEFAULT_VERSION = "20.0.0"
+    STARTUP_COMMAND              = "pm2 serve /home/site/wwwroot --no-daemon"
   }
 
   https_only = true
