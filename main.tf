@@ -32,3 +32,7 @@ resource "azurerm_app_service" "example" {
 
   https_only = true 
 }
+
+output "app_service_name" {
+  value = azurerm_app_service.example.name
+}
