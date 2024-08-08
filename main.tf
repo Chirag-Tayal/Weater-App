@@ -37,6 +37,10 @@ output "app_service_name" {
   value = azurerm_app_service.example.name
 }
 
+output "azure_service_connection" {
+  value = azuredevops_serviceendpoint_azurerm.example.id
+}
+
 
 resource "azuredevops_serviceendpoint_azurerm" "example" {
   project_id            = "28f5b3ba-c89d-445b-b328-03ecb3fbba5b"
