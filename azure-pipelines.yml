@@ -7,55 +7,8 @@ pool:
   name: my-pool
 
 stages:
-  - stage: Terraform
-    displayName: 'Terraform Stage'
-    jobs:
-      - job: Terraform
-        displayName: 'Terraform Job'
-        steps:
-          - script: |
-              export ARM_CLIENT_ID="4afb82c8-b1b7-4acb-95b8-7e45627e4539"
-              export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
-              export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
-              export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform init
-            displayName: 'Terraform Init'
-
-          - script: |
-              export ARM_CLIENT_ID="4afb82c8-b1b7-4acb-95b8-7e45627e4539"
-              export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
-              export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
-              export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform fmt -check
-            displayName: 'Terraform Format Check'
-
-          - script: |
-              export ARM_CLIENT_ID="4afb82c8-b1b7-4acb-95b8-7e45627e4539"
-              export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
-              export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
-              export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform validate
-            displayName: 'Terraform Validate'
-
-          - script: |
-              export ARM_CLIENT_ID="4afb82c8-b1b7-4acb-95b8-7e45627e4539"
-              export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
-              export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
-              export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform plan | grep "will be created."
-            displayName: 'Terraform Plan'
-
-          - script: |
-              export ARM_CLIENT_ID="4afb82c8-b1b7-4acb-95b8-7e45627e4539"
-              export ARM_CLIENT_SECRET="v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
-              export ARM_TENANT_ID="625c37b3-4f97-45bb-b1a4-c080858632ab"
-              export ARM_SUBSCRIPTION_ID="17bd46f2-ce41-4bdf-b47b-2347dc85340d"
-              terraform apply -auto-approve tfplan
-            displayName: 'Terraform Apply'
-
   - stage: Build
     displayName: 'Build Stage'
-    dependsOn: Terraform
     jobs:
       - job: Build
         displayName: 'Build Job'
