@@ -2,8 +2,10 @@ trigger:
   branches:
     include:
       - '*'
+
 pool:
   name: my-pool
+
 stages:
   - stage: Build
     displayName: 'Build stage'
@@ -20,6 +22,8 @@ stages:
               configMode: 'manual'
               projectKey: 'chiragtayal018_Weather_CICD'
               projectName: 'Weather_CICD'
+              cliProjectKey: 'chiragtayal018_Weather_CICD'  # Ensure this is the correct project key
+              
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
