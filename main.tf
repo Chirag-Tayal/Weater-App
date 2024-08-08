@@ -23,16 +23,34 @@ resource "azurerm_app_service" "example" {
   app_service_plan_id = azurerm_app_service_plan.example.id
 
   site_config {
-    linux_fx_version = "NODE|20-lts" 
+    linux_fx_version = "NODE|20-lts"
   }
 
   app_settings = {
-    WEBSITE_NODE_DEFAULT_VERSION = "20.0.0" 
+    WEBSITE_NODE_DEFAULT_VERSION = "20.0.0"
   }
 
-  https_only = true 
+  https_only = true
 }
 
 output "app_service_name" {
   value = azurerm_app_service.example.name
 }
+
+
+resource "azuredevops_serviceendpoint_azurerm" "example" {
+  project_id            = "28f5b3ba-c89d-445b-b328-03ecb3fbba5b"
+  service_endpoint_name = "${var.prefix}-service-connection"
+  description           = "Service connection for ${var.prefix}"
+
+  # Authentication details
+  azurerm_spn_tenantid      = var.tenant_id
+  azurerm_subscription_id   = var.subscription_id
+  azurerm_subscription_name = var.subscription_name
+
+  credentials {
+    serviceprincipalid  = var.client_id
+    serviceprincipalkey = var.client_secret
+  }
+}
+
