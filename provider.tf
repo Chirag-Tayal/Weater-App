@@ -15,7 +15,7 @@ terraform {
 
 provider "azuredevops" {
   org_service_url       = "https://dev.azure.com/chiragtayal018"
-  personal_access_token = "pov5xrx47lehqf7vh2j5t42ovmdlu64xpk4t56tenxgxuhoz5o7q"
+  personal_access_token = var.azure_devops_pat
 }
 
 # Configure the Microsoft Azure Provider
