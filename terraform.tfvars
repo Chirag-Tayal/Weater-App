@@ -1,0 +1,5 @@
+tenant_id       = "625c37b3-4f97-45bb-b1a4-c080858632ab"
+subscription_id = "17bd46f2-ce41-4bdf-b47b-2347dc85340d"
+client_id       = "4afb82c8-b1b7-4acb-95b8-7e45627e4539"
+client_secret   = "v9J8Q~LZnU5qTxHnLlFQeL0gRRU3GuIvxBzn9c_A"
+prefix          = "react"
