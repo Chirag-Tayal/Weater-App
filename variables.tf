@@ -13,7 +13,7 @@ variable "app" {
 variable "azure_devops_pat" {
   description = "Azure DevOps Personal Access Token"
   type        = string
-  default     = "cjhwmmmwwxhzupfgbwuysz5te23rf2xp66wsh6773rh7yqdryuaq"
+  default     = "pov5xrx47lehqf7vh2j5t42ovmdlu64xpk4t56tenxgxuhoz5o7q"
 
 }
 variable "tenant_id" {
