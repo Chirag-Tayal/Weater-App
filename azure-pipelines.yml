@@ -24,12 +24,12 @@ stages:
               npm run build
             displayName: 'Install dependencies, run tests, and build'
 
-          - task: SonarCloudPrepare@1
+          - task: SonarCloudPrepare@2
             inputs:
-              SonarCloud: 'sonarcloud-conn'
+              SonarCloud: 'sonar-cloud'
               organization: 'chiragtayal018'
               scannerMode: 'CLI'
-              configMode: 'manual'
+              configMode: 'file'
               cliProjectKey: 'chiragtayal018_Weather_CICD'
               cliProjectName: 'Weather_CICD'
               cliSources: 'src'
