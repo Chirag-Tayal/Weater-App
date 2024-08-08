@@ -11,12 +11,13 @@ stages:
       - job: Build
         displayName: 'Build job'
         steps:
-
+        
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
               organization: 'chiragtayal018'
-              scannerMode: 'MSBuild'
+              scannerMode: 'CLI'
+              configMode: 'manual'
               projectKey: 'chiragtayal018_Weather_CICD'
               projectName: 'Weather_CICD'
           - task: NodeTool@0
@@ -31,9 +32,6 @@ stages:
             displayName: 'Install dependencies, run tests, and build'
           
           - task: SonarCloudAnalyze@2
-            inputs:
-              jdkversion: 'JAVA_HOME_21_X64'
-          
 
           - task: CopyFiles@2
             inputs:
