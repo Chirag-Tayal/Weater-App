@@ -64,8 +64,8 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: '${{ variables.azureServiceConnection }}'
-              appName: '${{ variables.appServiceName }}'
+              azureSubscription: 'tf-service-connection'
+              appName: 'accuweatherstat'
               package: '$(Pipeline.Workspace)/drop/build'
               appType: 'webApp'
             displayName: 'Deploy to Azure Web App'
