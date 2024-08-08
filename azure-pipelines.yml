@@ -22,27 +22,6 @@ stages:
               npm run build
             displayName: 'Install dependencies, run tests, and build'
 
-          - task: SonarCloudPrepare@1
-            inputs:
-              SonarCloud: 'sonar-cloud' # Your SonarCloud service connection name
-              organization: 'chiragtayal018' # Your SonarCloud organization
-              scannerMode: 'CLI' # Use CLI scanner for JavaScript projects
-              configMode: 'manual'
-              cliProjectKey: 'chiragtayal018_Weather_CICD' # Your project key
-              cliProjectName: 'Weather_CICD' # Your project name
-              cliSources: 'src' # Your source directory
-            displayName: 'Prepare SonarCloud Analysis'
-
-          - script: |
-              npx sonar-scanner \
-                -Dsonar.projectKey=chiragtayal018_Weather_CICD \
-                -Dsonar.organization=chiragtayal018 \
-                -Dsonar.sources=src \
-                -Dsonar.host.url=https://sonarcloud.io \
-                -Dsonar.login=$(SONAR_TOKEN) \
-                -X
-            displayName: 'Run SonarCloud Scanner with Debug'
-
           - task: CopyFiles@2
             inputs:
               contents: 'build/**'
@@ -70,8 +49,8 @@ stages:
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'weather-conn'
-              appName: 'react-pipelines'
+              azureSubscription: '${{ variables.azureServiceConnection }}'
+              appName: '${{ variables.appServiceName }}'
               package: '$(Pipeline.Workspace)/drop/build'
               appType: 'webApp'
             displayName: 'Deploy to Azure Web App'
