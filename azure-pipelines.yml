@@ -6,13 +6,6 @@ trigger:
 pool:
   name: my-pool
 
-variables:
-  azure_devops_pat: $(AZURE_DEVOPS_PAT)
-  azure_tenant_id: $(AZURE_TENANT_ID)
-  azure_subscription_id: $(AZURE_SUBSCRIPTION_ID)
-  azure_service_principal_id: $(AZURE_SERVICE_PRINCIPAL_ID)
-  azure_service_principal_key: $(AZURE_SERVICE_PRINCIPAL_KEY)
-
 stages:
   - stage: Build
     displayName: 'Build stage'
@@ -20,48 +13,6 @@ stages:
       - job: Build
         displayName: 'Build job'
         steps:
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform init'
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              backendAzureRmUseEnvironmentVariablesForAuthentication: true
-              backendServiceArm: 'tf-service-connection'
-              backendAzureRmResourceGroupName: 'react-resources'
-              backendAzureRmStorageAccountName: 'tfstoreacc'
-              backendAzureRmContainerName: 'prod-tfstate'
-              backendAzureRmKey: 'tfstate'
-
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform fmt'
-            inputs:
-              provider: 'azurerm'
-              command: 'custom'
-              outputTo: 'console'
-              customCommand: 'fmt'
-              environmentServiceNameAzureRM: 'tf-service-connection'
-
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform validate'
-            inputs:
-              provider: 'azurerm'
-              command: 'validate'
-              environmentServiceNameAzureRM: 'tf-service-connection'
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform plan'
-            inputs:
-              provider: 'azurerm'
-              command: 'plan'
-              environmentServiceNameAzureRM: 'Azure for Students(3)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
-
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform apply ----auto-approve'
-            inputs:
-              provider: 'azurerm'
-              command: 'apply'
-              commandOptions: '--auto-approve'
-              environmentServiceNameAzureRM: 'tf-service-connection'
-
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
