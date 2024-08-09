@@ -14,24 +14,23 @@ stages:
         displayName: 'Build job'
         steps:
           - task: TerraformTaskV4@4
-            displayName: 'Terraform init'
             inputs:
               provider: 'azurerm'
               command: 'init'
-              backendAzureRmUseEntraIdForAuthentication: true
-              backendServiceArm: 'tf-service-connection'
+              backendAzureRmUseEnvironmentVariablesForAuthentication: true
+              backendServiceArm: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
               backendAzureRmResourceGroupName: 'react-resources'
               backendAzureRmStorageAccountName: 'tfstoreacc'
-              backendAzureRmContainerName: 'tfstate'
-              backendAzureRmKey: 'prod-tfstate'
+              backendAzureRmContainerName: 'prod-tfstate'
+              backendAzureRmKey: 'tfstate'
 
           - task: TerraformTaskV4@4
             inputs:
               provider: 'azurerm'
               command: 'custom'
-              commandOptions: 'fmt'
               outputTo: 'console'
-              environmentServiceNameAzureRM: 'tf-service-connection'
+              customCommand: 'fmt'
+              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
 
           - task: TerraformTaskV4@4
             inputs:
@@ -42,16 +41,15 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'tf-service-connection'
+              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
               commandOptions: '-out=tfplan -detailed-exitcode -input=false'
-              backendAzureRmUseEntraIdForAuthentication: true
-              
+
           - task: TerraformTaskV4@4
             inputs:
               provider: 'azurerm'
               command: 'apply'
               commandOptions: '--auto-approve'
-              environmentServiceNameAzureRM: 'tf-service-connection'
+              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
