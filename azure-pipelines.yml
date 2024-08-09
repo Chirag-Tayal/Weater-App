@@ -13,6 +13,45 @@ stages:
       - job: Build
         displayName: 'Build job'
         steps:
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendAzureRmUseEntraIdForAuthentication: true
+              backendServiceArm: 'tf-service-connection'
+              backendAzureRmResourceGroupName: 'react-resources'
+              backendAzureRmStorageAccountName: 'tfstoreacc'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'prod-tfstate'
+
+          - task: TerraformTaskV4@4
+            inputs:
+              provider: 'azurerm'
+              command: 'custom'
+              commandOptions: 'fmt'
+              outputTo: 'console'
+              environmentServiceNameAzureRM: 'tf-service-connection'
+
+          - task: TerraformTaskV4@4
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+
+          - task: TerraformTaskV4@4
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'tf-service-connection'
+              commandOptions: '-out=tfplan -detailed-exitcode -input=false'
+              backendAzureRmUseEntraIdForAuthentication: true
+              
+          - task: TerraformTaskV4@4
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              commandOptions: '--auto-approve'
+              environmentServiceNameAzureRM: 'tf-service-connection'
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
