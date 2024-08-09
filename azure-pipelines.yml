@@ -47,13 +47,12 @@ stages:
               provider: 'azurerm'
               command: 'validate'
               environmentServiceNameAzureRM: 'tf-service-connection'
-
           - task: TerraformTaskV4@4
             displayName: 'Terraform plan'
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'tf-service-connection'
+              environmentServiceNameAzureRM: 'Azure for Students(3)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
 
           - task: TerraformTaskV4@4
             displayName: 'Terraform apply ----auto-approve'
