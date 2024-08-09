@@ -20,7 +20,6 @@ stages:
       - job: Build
         displayName: 'Build job'
         steps:
-
           - task: TerraformTaskV4@4
             displayName: 'Terraform init'
             inputs:
@@ -41,12 +40,13 @@ stages:
               outputTo: 'console'
               customCommand: 'fmt'
               environmentServiceNameAzureRM: 'tf-service-connection'
-          
+
           - task: TerraformTaskV4@4
             displayName: 'Terraform validate'
             inputs:
               provider: 'azurerm'
               command: 'validate'
+              environmentServiceNameAzureRM: 'tf-service-connection'
 
           - task: TerraformTaskV4@4
             displayName: 'Terraform plan'
@@ -62,7 +62,7 @@ stages:
               command: 'apply'
               commandOptions: '--auto-approve'
               environmentServiceNameAzureRM: 'tf-service-connection'
-          
+
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
@@ -71,8 +71,8 @@ stages:
               configMode: 'manual'
               projectKey: 'chiragtayal018_Weather_CICD'
               projectName: 'Weather_CICD'
-              cliProjectKey: 'chiragtayal018_Weather_CICD'  # Ensure this is the correct project key
-              
+              cliProjectKey: 'chiragtayal018_Weather_CICD'
+
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
@@ -83,7 +83,7 @@ stages:
               npm test -- --watchAll=false
               npm run build
             displayName: 'Install dependencies, run tests, and build'
-          
+
           - task: SonarCloudAnalyze@2
 
           - task: CopyFiles@2
@@ -91,13 +91,13 @@ stages:
               contents: 'build/**'
               targetFolder: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Copy build files'
-          
+
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: 'drop'
             displayName: 'Publish build artifacts'
-          
+
   - stage: Deploy
     displayName: 'Deploy stage'
     dependsOn: Build
