@@ -12,7 +12,7 @@ variables:
   azure_subscription_id: $(AZURE_SUBSCRIPTION_ID)
   azure_service_principal_id: $(AZURE_SERVICE_PRINCIPAL_ID)
   azure_service_principal_key: $(AZURE_SERVICE_PRINCIPAL_KEY)
-  
+
 stages:
   - stage: Build
     displayName: 'Build stage'
@@ -25,7 +25,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendAzureRmUseEnvironmentVariablesForAuthentication: true
-              backendServiceArm: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              backendServiceArm: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
               backendAzureRmResourceGroupName: 'react-resources'
               backendAzureRmStorageAccountName: 'tfstoreacc'
               backendAzureRmContainerName: 'prod-tfstate'
@@ -37,7 +37,7 @@ stages:
               command: 'custom'
               outputTo: 'console'
               customCommand: 'fmt'
-              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
 
           - task: TerraformTaskV4@4
             inputs:
@@ -48,7 +48,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
               commandOptions: '-out=tfplan -detailed-exitcode -input=false'
 
           - task: TerraformTaskV4@4
@@ -56,7 +56,7 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               commandOptions: '--auto-approve'
-              environmentServiceNameAzureRM: 'Azure for Students(2)(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
