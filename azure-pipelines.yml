@@ -6,6 +6,13 @@ trigger:
 pool:
   name: my-pool
 
+variables:
+  azure_devops_pat: $(AZURE_DEVOPS_PAT)
+  azure_tenant_id: $(AZURE_TENANT_ID)
+  azure_subscription_id: $(AZURE_SUBSCRIPTION_ID)
+  azure_service_principal_id: $(AZURE_SERVICE_PRINCIPAL_ID)
+  azure_service_principal_key: $(AZURE_SERVICE_PRINCIPAL_KEY)
+  
 stages:
   - stage: Build
     displayName: 'Build stage'
