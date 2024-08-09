@@ -20,43 +20,49 @@ stages:
       - job: Build
         displayName: 'Build job'
         steps:
+
           - task: TerraformTaskV4@4
+            displayName: 'Terraform init'
             inputs:
               provider: 'azurerm'
               command: 'init'
               backendAzureRmUseEnvironmentVariablesForAuthentication: true
-              backendServiceArm: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              backendServiceArm: 'tf-service-connection'
               backendAzureRmResourceGroupName: 'react-resources'
               backendAzureRmStorageAccountName: 'tfstoreacc'
               backendAzureRmContainerName: 'prod-tfstate'
               backendAzureRmKey: 'tfstate'
 
           - task: TerraformTaskV4@4
+            displayName: 'Terraform fmt'
             inputs:
               provider: 'azurerm'
               command: 'custom'
               outputTo: 'console'
               customCommand: 'fmt'
-              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
-
+              environmentServiceNameAzureRM: 'tf-service-connection'
+          
           - task: TerraformTaskV4@4
+            displayName: 'Terraform validate'
             inputs:
               provider: 'azurerm'
               command: 'validate'
 
           - task: TerraformTaskV4@4
+            displayName: 'Terraform plan'
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
-              commandOptions: '-out=tfplan -detailed-exitcode -input=false'
+              environmentServiceNameAzureRM: 'tf-service-connection'
 
           - task: TerraformTaskV4@4
+            displayName: 'Terraform apply ----auto-approve'
             inputs:
               provider: 'azurerm'
               command: 'apply'
               commandOptions: '--auto-approve'
-              environmentServiceNameAzureRM: 'Azure for Students(17bd46f2-ce41-4bdf-b47b-2347dc85340d)'
+              environmentServiceNameAzureRM: 'tf-service-connection'
+          
           - task: SonarCloudPrepare@2
             inputs:
               SonarCloud: 'sonarcloud-conn'
